@@ -216,7 +216,7 @@ def get_application():
 
     # Merging the pre dataframe with the post dataframe to store the unique identifiers
     master_label_encoding = label_encod_df.merge(df,on='SK_ID_CURR',how='inner')[['ORGANIZATION_TYPE_x','ORGANIZATION_TYPE_y']].drop_duplicates()
-    master_label_encoding.rename(columns={'ORGANIZATION_TYPE_y': 'ORGANIZATION_TYPE_TEXT','ORGANIZATION_TYPE_x': 'ORGANIZATION_TYPE'}, inplace=True)
+    master_label_encoding.rename(columns={'ORGANIZATION_TYPE_x': 'ORGANIZATION_TYPE_TEXT','ORGANIZATION_TYPE_y': 'ORGANIZATION_TYPE'}, inplace=True)
 
     #Exporting to GCP
 

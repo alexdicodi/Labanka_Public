@@ -25,7 +25,7 @@ def predict(with_previous,
             AMT_INCOME_TOTAL,           # 50000
             DAYS_BIRTH,                 # 2530
             DAYS_EMPLOYED,              # 270
-            ORGANIZATION_TYPE_TEXT,          # Electricity (Label encoding)
+            ORGANIZATION_TYPE_TEXT,     # Electricity (Label encoding)
             EXT_SOURCE2,                # floating € [0,1]
             EXT_SOURCE3,                # floating € [0,1]
             DEF_60_CNT_SOCIAL_CIRCLE,   # Default (integer number)
@@ -105,7 +105,7 @@ def predict(with_previous,
 
     # Preparing the dictionary to append to the empty dataframe
     
-    df_input_append = {'with_previous': with_previous, 'CNT_CHILDREN': CNT_CHILDREN, 'AMT_INCOME_TOTAL': AMT_INCOME_TOTAL, 'DAYS_BIRTH': DAYS_BIRTH,
+    df_input_append = {'CNT_CHILDREN': CNT_CHILDREN, 'AMT_INCOME_TOTAL': AMT_INCOME_TOTAL, 'DAYS_BIRTH': DAYS_BIRTH,
        'DAYS_EMPLOYED': DAYS_EMPLOYED, 'ORGANIZATION_TYPE_TEXT': ORGANIZATION_TYPE_TEXT,'EXT_SOURCE_2': EXT_SOURCE2, 'EXT_SOURCE_3': EXT_SOURCE3,
        'DEF_60_CNT_SOCIAL_CIRCLE': DEF_60_CNT_SOCIAL_CIRCLE, 'AMT_REQ_CREDIT_BUREAU_DAY': AMT_REQ_CREDIT_BUREAU_DAY,
        'AMT_REQ_CREDIT_BUREAU_YEAR': AMT_REQ_CREDIT_BUREAU_YEAR, 'ANNUITY_OVER_CREDIT_RATIO': ANNUITY_OVER_CREDIT_RATIO,
@@ -136,7 +136,7 @@ def predict(with_previous,
        'CREDIT_TO_ANNUITY_RATIO_max': CREDIT_TO_ANNUITY_RATIO, 'APPLICATION_CREDIT_DIFF_min': APPLICATION_CREDIT_DIF,
        'APPLICATION_CREDIT_DIFF_max': APPLICATION_CREDIT_DIF, 'APPLICATION_CREDIT_DIFF_mean': APPLICATION_CREDIT_DIF,
        'PREV_REFUSED_COUNT_mean': PREV_REFUSED_COUNT, 'PREV_APPROVED_COUNT_mean': PREV_APPROVED_COUNT, 'AMT_PAYMENT': AMT_PAYMENT,
-       'LATE_PAY': LATE_PAY, 'AMT_MISS': AMT_MISS}
+       'LATE_PAY': LATE_PAY, 'AMT_MISS': AMT_MISS,'with_previous': with_previous}
 
     df = input_df.append(df_input_append, ignore_index = True)
 
@@ -193,22 +193,20 @@ def predict(with_previous,
             None
     
     ## Merging with the master label encoding df
-    df['ORGANIZATION_TYPE_TEXT'] = df['ORGANIZATION_TYPE_TEXT'].astype(str)
     clean_df = df.merge(master_label_encoder_df,on='ORGANIZATION_TYPE_TEXT',how='inner')
     clean_df.drop(columns='ORGANIZATION_TYPE_TEXT', inplace=True)
+
+    # convert all columns of DataFrame
+    clean_df = clean_df.apply(pd.to_numeric) # convert all columns of DataFrame
 
     # pipeline = get_model_from_gcp() OKEI
     model = get_joblib_gcp(bucket="wagon-data-618-le-banq", file_path='model/no_bureau_model_lgbm.sav')
 
     # make prediction
     results = model.predict(clean_df)
-
-    """
-    # convert response from numpy to python type
+    
+    #convert response from numpy to python type
     pred = float(results[0])
     return dict(prediction=pred)
-    """
-    return results
-    
     
 # $DELETE_END
