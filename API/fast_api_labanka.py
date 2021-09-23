@@ -60,14 +60,6 @@ def predict(with_previous,
     else:
         CREDIT_TO_ANNUITY_RATIO = int(CURR_AMT_CREDIT) / int(CURR_AMT_ANNUITY)
 
-    """not used in the original preparation file
-    #Loading the encoders
-    get_current_app_OHE_processor = get_processor_gcp(bucket="wagon-data-618-le-banq", file_path='encoders/get_app_OHE_pipeline.pkl')
-    get_current_app_ORD_processor = get_processor_gcp(bucket="wagon-data-618-le-banq", file_path='encoders/get_app_ORD_pipeline.pkl')
-    prev_app_OHE_processor = get_processor_gcp(bucket="wagon-data-618-le-banq", file_path='encoders/get_prev_app_OHE_pipeline.pkl')
-    prev_app_OHE_processor = get_processor_gcp(bucket="wagon-data-618-le-banq", file_path='encoders/get_prev_app_OHE_pipeline.pkl')
-    """
-
     #Loading the master label encoder
 
     master_label_encoder_df = get_pickle_gcp(file_path='encoders/master_label_encoding.pkl')
@@ -201,7 +193,7 @@ def predict(with_previous,
             None
     
     ## Merging with the master label encoding df
-
+    df['ORGANIZATION_TYPE_TEXT'] = df['ORGANIZATION_TYPE_TEXT'].astype(str)
     clean_df = df.merge(master_label_encoder_df,on='ORGANIZATION_TYPE_TEXT',how='inner')
     clean_df.drop(columns='ORGANIZATION_TYPE_TEXT', inplace=True)
 
@@ -211,9 +203,12 @@ def predict(with_previous,
     # make prediction
     results = model.predict(clean_df)
 
+    """
     # convert response from numpy to python type
     pred = float(results[0])
-
     return dict(prediction=pred)
+    """
+    return results
+    
     
 # $DELETE_END
