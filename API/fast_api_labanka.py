@@ -74,7 +74,7 @@ def predict(with_previous,
 
     #Loading the dataframe column structure
 
-    columns_df =  ['with_previous','CNT_CHILDREN', 'AMT_INCOME_TOTAL', 'DAYS_BIRTH',
+    columns_df =  ['CNT_CHILDREN', 'AMT_INCOME_TOTAL', 'DAYS_BIRTH',
    'DAYS_EMPLOYED', 'ORGANIZATION_TYPE_TEXT', 'EXT_SOURCE_2', 'EXT_SOURCE_3',
    'DEF_60_CNT_SOCIAL_CIRCLE', 'AMT_REQ_CREDIT_BUREAU_DAY',
    'AMT_REQ_CREDIT_BUREAU_YEAR', 'ANNUITY_OVER_CREDIT_RATIO',
@@ -105,7 +105,7 @@ def predict(with_previous,
    'CREDIT_TO_ANNUITY_RATIO_max', 'APPLICATION_CREDIT_DIFF_min',
    'APPLICATION_CREDIT_DIFF_max', 'APPLICATION_CREDIT_DIFF_mean',
    'PREV_REFUSED_COUNT_mean', 'PREV_APPROVED_COUNT_mean', 'AMT_PAYMENT',
-   'LATE_PAY', 'AMT_MISS']
+   'LATE_PAY', 'AMT_MISS', 'with_previous']
 
     #Creating an empty dataframe
 

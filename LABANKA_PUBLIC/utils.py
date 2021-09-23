@@ -143,11 +143,12 @@ def storage_upload(rm=False, BUCKET_NAME="wagon-data-618-le-banq", MODEL_NAME = 
     :param local_model_file_path: File path of the local model
     :return: model
     """
-    client = storage.Client().bucket(BUCKET_NAME)
-    storage_location = f"models/{MODEL_NAME}/{MODEL_VERSION}/{local_model_file_path}"
-    blob = client.blob(storage_location)
-    blob.upload_from_filename(local_model_file_path)
-    print(f"=> model.joblib uploaded to bucket {BUCKET_NAME} inside {storage_location}")
+    #Loading it to GCP
+    base_bucket = storage.Bucket(BUCKET_NAME)
+    # Write pickle to GCS
+    sample_item = base_bucket.item(local_model_file_path)
+    with open(local_model_file_path, 'rb') as f:
+        sample_item.write_to(bytearray(f.read()), f'model/{local_model_file_path}')
     if rm:
         os.remove(local_model_file_path)
 

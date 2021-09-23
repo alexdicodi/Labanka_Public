@@ -83,4 +83,4 @@ run_streamlit:
 ##### Prediction API - - - - - - - - - - - - - - - - - - - - - - - - -
 
 run_api:
-	uvicorn API.fast_pd:app --reload  # load web server with code autoreload
+	uvicorn API.fast_api_labanka:app --reload  # load web server with code autoreload

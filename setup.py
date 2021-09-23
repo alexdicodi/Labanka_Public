@@ -13,13 +13,4 @@ setup(name='LABANKA_PUBLIC',
       test_suite='tests',
       # include_package_data: to install data from MANIFEST.in
       include_package_data=True,
-      scripts=['scripts/PD_LOAN_PREDICTION-run'],
       zip_safe=False)
-
-setup(name="streamlitapp",
-      version="1.0",
-      description="streamlit app",
-      packages=find_packages(),
-      include_package_data=True,  # includes in package files from MANIFEST.in
-      install_requires=requirements)
-      

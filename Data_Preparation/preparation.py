@@ -144,7 +144,7 @@ def main_dataset():
     ## Write pickle to GCS
     sample_item = base_bucket.item('bureau_df.pkl')
     with open('bureau_df.pkl', 'rb') as f:
-        sample_item.write_to(bytearray(f.read()), 'model/bureau_df.pkl')
+        sample_item.write_to(bytearray(f.read()), 'bureau_df.pkl')
 
     # Loading no_bureau_df to GCP
     ## Create a local pickle file
@@ -154,7 +154,7 @@ def main_dataset():
     ## Write pickle to GCS
     sample_item = base_bucket.item('no_bureau_df.pkl')
     with open('no_bureau_df.pkl', 'rb') as f:
-        sample_item.write_to(bytearray(f.read()), 'model/no_bureau_df.pkl')
+        sample_item.write_to(bytearray(f.read()), 'no_bureau_df.pkl')
 
     return bureau_df, no_bureau_df
 
@@ -211,6 +211,24 @@ def get_application():
     df, encode_label_cols = label_encoder(df, categorical_columns=['ORGANIZATION_TYPE'])
 
     #Creating a master label reconciliation table
+    #Resetting index
+    label_encod_df = df_base.reset_index()
+
+    # Merging the pre dataframe with the post dataframe to store the unique identifiers
+    master_label_encoding = label_encod_df.merge(df,on='SK_ID_CURR',how='inner')[['ORGANIZATION_TYPE_x','ORGANIZATION_TYPE_y']].drop_duplicates()
+    master_label_encoding.rename(columns={'ORGANIZATION_TYPE_y': 'ORGANIZATION_TYPE_TEXT','ORGANIZATION_TYPE_x': 'ORGANIZATION_TYPE'}, inplace=True)
+
+    #Exporting to GCP
+
+    # Loading master_label_encoding to GCP
+    ## Create a local pickle file
+    master_label_encoding.to_pickle('master_label_encoding.pkl')
+    base_bucket = storage.Bucket("wagon-data-618-le-banq")
+
+    ## Write pickle to GCS
+    sample_item = base_bucket.item('master_label_encoding.pkl')
+    with open('master_label_encoding.pkl', 'rb') as f:
+        sample_item.write_to(bytearray(f.read()), 'master_label_encoding.pkl')
     
 
     #Resetting index
@@ -457,3 +475,6 @@ def get_bureau_balance():
     
     
     return df_bbalance
+
+if __name__ == "__main__":
+    bureau_df, no_bureau_df = main_dataset()
